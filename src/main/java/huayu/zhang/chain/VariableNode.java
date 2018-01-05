@@ -8,6 +8,7 @@ public final class VariableNode implements Node {
   }
 
   public void setValue(double val) { val_ = val; }
+  public void increase(double val) { val_ += val; }
   public double getValue() { return val_; }
 
   @Override

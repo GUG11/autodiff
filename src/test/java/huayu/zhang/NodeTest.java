@@ -147,7 +147,7 @@ public class NodeTest extends TestCase
       assertEquals(f.evalDiff((VariableNode)xs.get(1)), 1.0, EPSILON);
       assertEquals(f.evalDiff((VariableNode)xs.get(10)), 1.0, EPSILON);
       assertEquals(f.evalDiff((VariableNode)xs.get(100)), 1.0, EPSILON);
-      ((VectorSumNode)f).setWeights(A);
+      ((VectorSumNode)f).setCoeffs(A);
       assertEquals(f.eval(), A.stream().mapToDouble(v -> v * v).sum(), EPSILON);
       assertEquals(f.evalDiff((VariableNode)xs.get(0)), A.get(0), EPSILON);
       assertEquals(f.evalDiff((VariableNode)xs.get(5)), A.get(5), EPSILON);
