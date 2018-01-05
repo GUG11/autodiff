@@ -7,6 +7,10 @@ import huayu.zhang.chain.SinNode;
 import huayu.zhang.chain.PolynomialNode;
 
 import huayu.zhang.chain.PlusNode;
+import huayu.zhang.chain.VectorSumNode;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -127,5 +131,27 @@ public class NodeTest extends TestCase
       assertEquals(f.eval(), v1 + Math.sin(v2 - v1 * v1), EPSILON);
       assertEquals(f.evalDiff(x1), 1.0 - 2 * v1 * Math.cos(v2 - v1 * v1), EPSILON);
       assertEquals(f.evalDiff(x2), Math.cos(v2 - v1 * v1), EPSILON);
+    }
+
+    public void testVecSumNode1() {
+      List<Double> A = new ArrayList<>();
+      List<Node> xs = new ArrayList<>();
+      int n = 1000;
+      for (int i = 0; i < n; i++) {
+        A.add((double)i);
+        xs.add(new VariableNode(i));
+      }
+      Node f = new VectorSumNode(xs);
+      assertEquals(f.eval(), A.stream().mapToDouble(v -> v).sum(), EPSILON);
+      assertEquals(f.evalDiff((VariableNode)xs.get(0)), 1.0, EPSILON);
+      assertEquals(f.evalDiff((VariableNode)xs.get(1)), 1.0, EPSILON);
+      assertEquals(f.evalDiff((VariableNode)xs.get(10)), 1.0, EPSILON);
+      assertEquals(f.evalDiff((VariableNode)xs.get(100)), 1.0, EPSILON);
+      ((VectorSumNode)f).setWeights(A);
+      assertEquals(f.eval(), A.stream().mapToDouble(v -> v * v).sum(), EPSILON);
+      assertEquals(f.evalDiff((VariableNode)xs.get(0)), A.get(0), EPSILON);
+      assertEquals(f.evalDiff((VariableNode)xs.get(5)), A.get(5), EPSILON);
+      assertEquals(f.evalDiff((VariableNode)xs.get(25)), A.get(25), EPSILON);
+      assertEquals(f.evalDiff((VariableNode)xs.get(999)), A.get(999), EPSILON);
     }
 }
