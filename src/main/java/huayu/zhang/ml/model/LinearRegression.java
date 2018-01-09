@@ -42,7 +42,7 @@ public class LinearRegression implements ModelBase {
   public void SGDStep(DataEntry entry) {
     List<Double> dw = new ArrayList<>();
     func_.setCoeffs(entry.getFeatures());
-    output_.setValue(entry.getTarget());
+    output_.setValue(entry.getTarget(0));
     // compute differentials
     for (Node wNode: weights_) {
       dw.add(err_.evalDiff((VariableNode)wNode));
@@ -80,8 +80,10 @@ public class LinearRegression implements ModelBase {
   }
 
   @Override 
-  public Double predict(List<Double> features) {
+  public List<Double> predict(List<Double> features) {
+    List<Double> outputs = new ArrayList<>();
     func_.setCoeffs(features);
-    return func_.eval();
+    outputs.add(func_.eval());
+    return outputs;
   }
 }

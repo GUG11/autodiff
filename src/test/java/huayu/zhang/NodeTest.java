@@ -1,10 +1,13 @@
 package huayu.zhang;
 
 import huayu.zhang.chain.Node;
-import huayu.zhang.chain.VariableNode;
+import huayu.zhang.chain.MultNode;
 import huayu.zhang.chain.NegationNode;
+import huayu.zhang.chain.ReLuNode;
+import huayu.zhang.chain.SigmoidNode;
 import huayu.zhang.chain.SinNode;
 import huayu.zhang.chain.PolynomialNode;
+import huayu.zhang.chain.VariableNode;
 
 import huayu.zhang.chain.PlusNode;
 import huayu.zhang.chain.VectorSumNode;
@@ -104,6 +107,29 @@ public class NodeTest extends TestCase
       assertEquals(y.evalDiff((VariableNode)x), Math.cos(th2), EPSILON);
     }
 
+    public void testRelu() {
+      VariableNode x = new VariableNode(1.0);
+      Node v = new ReLuNode(x);
+      assertEquals(v.eval(), x.eval(), EPSILON);
+      assertEquals(v.evalDiff(x), 1.0, EPSILON);
+      x.setValue(0.0);
+      assertEquals(v.eval(), x.eval(), EPSILON);
+      assertEquals(v.evalDiff(x), 1.0, EPSILON);
+      x.setValue(-1.0);
+      assertEquals(v.eval(), 0.0, EPSILON);
+      assertEquals(v.evalDiff(x), 0.0, EPSILON);
+    }
+
+    public void testSigmoid() {
+      VariableNode x = new VariableNode(1.0);
+      Node v = new SigmoidNode(x);
+      assertEquals(v.evalDiff(x), Math.exp(-x.eval()) / Math.pow(1 + Math.exp(-x.eval()), 2), EPSILON);
+      x.setValue(0);
+      assertEquals(v.evalDiff(x), Math.exp(-x.eval()) / Math.pow(1 + Math.exp(-x.eval()), 2), EPSILON);
+      x.setValue(-1.0);
+      assertEquals(v.evalDiff(x), Math.exp(-x.eval()) / Math.pow(1 + Math.exp(-x.eval()), 2), EPSILON);
+    }
+
     public void testPolynomial1() {
       double v = 2;
       double[] as = {1.0, 2.5, 0.5, 3.0};
@@ -153,5 +179,24 @@ public class NodeTest extends TestCase
       assertEquals(f.evalDiff((VariableNode)xs.get(5)), A.get(5), EPSILON);
       assertEquals(f.evalDiff((VariableNode)xs.get(25)), A.get(25), EPSILON);
       assertEquals(f.evalDiff((VariableNode)xs.get(999)), A.get(999), EPSILON);
+    }
+
+    /*
+     * VecSumNode + SigmoidNode
+     */
+    public void testLogistic1() {
+      List<VariableNode> x = new ArrayList<>();
+      x.add(new VariableNode(-1.0)); x.add(new VariableNode(0.0)); x.add(new VariableNode(1.0));
+      List<VariableNode> w = new ArrayList<>();
+      w.add(new VariableNode(-2.0)); w.add(new VariableNode(-1.0)); w.add(new VariableNode(1.5));
+      List<Node> m = new ArrayList<>();
+      for (int i = 0; i < x.size(); i++) {
+        m.add(new MultNode(x.get(i), w.get(i)));
+      }
+      SigmoidNode f = new SigmoidNode(new VectorSumNode(m));
+      double df = Math.exp(-3.5) / Math.pow(1 + Math.exp(-3.5), 2);
+      assertEquals(f.evalDiff(w.get(0)), df * -1.0, EPSILON);
+      assertEquals(f.evalDiff(w.get(1)), df * 0.0, EPSILON);
+      assertEquals(f.evalDiff(w.get(2)), df * 1.0, EPSILON);
     }
 }

@@ -6,5 +6,5 @@ import huayu.zhang.ml.DataEntry;
 
 public interface ModelBase {
   public void fit(List<DataEntry> entries);
-  public Double predict(List<Double> features);
+  public List<Double> predict(List<Double> features);
 }
