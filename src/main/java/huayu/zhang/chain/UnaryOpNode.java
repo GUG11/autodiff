@@ -14,8 +14,7 @@ public abstract class UnaryOpNode implements Node {
   }
 
   @Override
-  public final double evalDiff(VariableNode x) {
-    return diffChild() * child_.evalDiff(x);
+  public final double evalDiff(Node x) {
+    return (this == x) ? 1.0 : diffChild() * child_.evalDiff(x);
   }
-
 }

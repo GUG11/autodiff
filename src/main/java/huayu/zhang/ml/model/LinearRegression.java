@@ -1,6 +1,5 @@
 package huayu.zhang.ml.model;
 
-
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;

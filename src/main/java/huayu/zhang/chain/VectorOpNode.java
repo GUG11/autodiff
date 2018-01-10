@@ -15,7 +15,8 @@ public abstract class VectorOpNode implements Node {
   public void setChild(int index, Node node) { children_.set(index, node); }
 
   @Override
-  public final double evalDiff(VariableNode x) {
+  public final double evalDiff(Node x) {
+    if (this == x) return 1.0;
     double df = 0.0;
     for (int i = 0; i < children_.size(); i++) {
       df += diffChild(i) * children_.get(i).evalDiff(x);

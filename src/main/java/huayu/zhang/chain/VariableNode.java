@@ -1,5 +1,8 @@
 package huayu.zhang.chain;
 
+/**
+ * Leaf nodes of the expression
+ * */
 public final class VariableNode implements Node {
   private double val_;
 
@@ -17,7 +20,7 @@ public final class VariableNode implements Node {
   }
   
   @Override
-  public double evalDiff(VariableNode x) {
+  public double evalDiff(Node x) {
     return this == x ? 1.0 : 0.0;
   }
 }

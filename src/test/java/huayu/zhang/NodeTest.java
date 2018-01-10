@@ -8,6 +8,8 @@ import huayu.zhang.chain.SigmoidNode;
 import huayu.zhang.chain.SinNode;
 import huayu.zhang.chain.PolynomialNode;
 import huayu.zhang.chain.VariableNode;
+import huayu.zhang.chain.LeastSquareNode;
+import huayu.zhang.chain.VectorLeastSquareNode;
 
 import huayu.zhang.chain.PlusNode;
 import huayu.zhang.chain.VectorSumNode;
@@ -47,7 +49,7 @@ public class NodeTest extends TestCase
       double v = 1.0;
       Node n = new VariableNode(v);
       assertEquals(n.eval(), v);
-      assertEquals(n.evalDiff((VariableNode)n), 1.0, EPSILON);
+      assertEquals(n.evalDiff(n), 1.0, EPSILON);
     }
 
     public void testVariableNode2() {
@@ -179,6 +181,30 @@ public class NodeTest extends TestCase
       assertEquals(f.evalDiff((VariableNode)xs.get(5)), A.get(5), EPSILON);
       assertEquals(f.evalDiff((VariableNode)xs.get(25)), A.get(25), EPSILON);
       assertEquals(f.evalDiff((VariableNode)xs.get(999)), A.get(999), EPSILON);
+    }
+
+    public void testLSE1() {
+      VariableNode x1 = new VariableNode(2.0);
+      VariableNode x2 = new VariableNode(-1.0);
+      Node y = new LeastSquareNode(x1, x2);
+      assertEquals(y.eval(), 4.5, EPSILON);
+      assertEquals(y.evalDiff(x1), 3.0, EPSILON);
+      assertEquals(y.evalDiff(x2), -3.0, EPSILON);
+    }
+
+    public void testLSE2() {
+      List<Node> x1 = new ArrayList<>();
+      List<Node> x2 = new ArrayList<>();
+      x1.add(new VariableNode(1.0));
+      x1.add(new VariableNode(-2.0));
+      x2.add(new VariableNode(-1.0));
+      x2.add(new VariableNode(2.0));
+      Node y = new VectorLeastSquareNode(x1, x2);
+      assertEquals(y.eval(), 10.0, EPSILON);
+      assertEquals(y.evalDiff(x1.get(0)), 2.0, EPSILON);
+      assertEquals(y.evalDiff(x1.get(1)), -4.0, EPSILON);
+      assertEquals(y.evalDiff(x2.get(0)), -2.0, EPSILON);
+      assertEquals(y.evalDiff(x2.get(1)), 4.0, EPSILON);
     }
 
     /*
