@@ -16,7 +16,7 @@ public abstract class BinaryOpNode implements Node {
   public void setRight(Node right) { right_ = right; }
 
   @Override
-  public final double evalDiff(VariableNode x) {
-    return diffLeft() * left_.evalDiff(x) + diffRight() * right_.evalDiff(x);
+  public final double evalDiff(Node x) {
+    return (this == x) ? 1.0 : (diffLeft() * left_.evalDiff(x) + diffRight() * right_.evalDiff(x));
   }
 }
